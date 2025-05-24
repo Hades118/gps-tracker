@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live GPS Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #0f0;
+      padding: 20px;
+    }
+    h1 { color: #0ff; }
+    .data { margin: 10px 0; font-size: 1.2em; }
+  </style>
+</head>
+<body>
+  <h1>Live GPS Tracker</h1>
+  <div class="data" id="lat">Latitude: Loading...</div>
+  <div class="data" id="lon">Longitude: Loading...</div>
+  <div class="data" id="speed">Speed: Waiting...</div>
+
+  <script>
+    if ("geolocation" in navigator) {
+      navigator.geolocation.watchPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const speedMps = position.coords.speed;
+          const speedKmph = speedMps !== null ? (speedMps * 3.6).toFixed(2) : "Unavailable";
+
+          document.getElementById("lat").textContent = `Latitude: ${lat}`;
+          document.getElementById("lon").textContent = `Longitude: ${lon}`;
+          document.getElementById("speed").textContent = `Speed: ${speedKmph} km/h`;
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+          alert("Failed to access GPS. Make sure location services are enabled.");
+        },
+        {
+          enableHighAccuracy: true,
+          maximumAge: 1000,
+          timeout: 5000
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
+  </script>
+</body>
+</html>
